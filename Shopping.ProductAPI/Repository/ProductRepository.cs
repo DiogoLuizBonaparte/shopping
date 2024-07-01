@@ -28,7 +28,7 @@ namespace Shopping.ProductAPI.Repository
 
         public async Task<ProductVO> FindById(long id)
         {
-            Product produtc = await _context.Products.Where(p => p.Id == id).FirstOrDefaultAsync();
+            Product produtc = await _context.Products.Where(p => p.Id == id).FirstOrDefaultAsync() ?? new Product();
             return _mapper.Map<ProductVO>(produtc); 
         }
         public async Task<ProductVO> Create(ProductVO vo)
@@ -47,26 +47,20 @@ namespace Shopping.ProductAPI.Repository
 
         }
 
-
         public async Task<bool> Delete(long id)
         {
             try
             {
-                Product produtc = await _context.Products.Where(p => p.Id == id).FirstOrDefaultAsync();
-                if (produtc == null) return false;
-                
+                Product produtc = await _context.Products.Where(p => p.Id == id).FirstOrDefaultAsync() ?? new Product();
+                if (produtc.Id <= 0) return false;                
                 _context.Products.Remove(produtc);
                 await _context.SaveChangesAsync();
                 return true;
-
             }
             catch(Exception)
             {
                 return false;
-            }
-            
-           
+            }   
         }
-
     }
 }
